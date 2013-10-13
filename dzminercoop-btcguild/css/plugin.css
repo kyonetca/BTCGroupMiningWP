@@ -1,0 +1,19 @@
+table.dzm-btcguild {
+  border-collapse:collapse;
+}
+table.dzm-btcguild th {
+    text-align: left;
+}
+table.dzm-btcguild td.negative {
+    color: #cc0000;
+}
+table.dzm-btcguild .dzm-top {
+    background-color: #ccc;
+    text-align: center;
+}
+table.dzm-btcguild tr.dzm-summary td {
+    border-top: 2px solid black;
+}
+table.dzm-btcguild td.credit {
+    font-size: 0.8em;
+}
