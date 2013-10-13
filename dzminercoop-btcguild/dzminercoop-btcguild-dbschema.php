@@ -2,7 +2,6 @@
 global $dzm_btcguild_db_version;
 $dzm_btcguild_db_version = "1.2";
 
-register_activation_hook( __FILE__, 'dzm_btcguild_install' );
 add_action( 'plugins_loaded', 'dzm_update_db_check');
 
 function dzm_btcguild_install() {

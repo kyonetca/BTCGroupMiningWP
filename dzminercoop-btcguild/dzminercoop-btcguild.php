@@ -12,6 +12,10 @@ Author URI: http://mootinator.com/
 License: GPLv2 or later
 */
 
+register_activation_hook( __FILE__, 'dzm_btcguild_install' );
+register_activation_hook( __FILE__, 'dz_setup_schedule' );
+register_deactivation_hook(__FILE__, 'dzm_deactivator');
+
 include( plugin_dir_path( __FILE__ ) . 'dzminercoop-btcguild-dbschema.php');
 include( plugin_dir_path( __FILE__ ) . 'dzminercoop-btcguild-scheduling.php');
 include( plugin_dir_path( __FILE__ ) . 'dzminercoop-btcguild-shortcodes.php');

@@ -1,17 +1,7 @@
 <?php
-register_activation_hook( __FILE__, 'dz_setup_schedule' );
-register_deactivation_hook(__FILE__, 'dzm_deactivator');
 
 add_action( 'dzm_update_accounts_hook', 'dzm_update_accounts');
 add_filter( 'cron_schedules', 'cron_add_tenminutes' );
-
-function cron_add_tenminutes($schedules) {
-    $schedules['tenminutes'] = array(
-        'interval' => 600,
-        'display' => __( 'Once Every 10 Minutes' )
-    );
-    return $schedules;
-}
 
 function dz_setup_schedule() {
     wp_schedule_event( current_time('timestamp'), 'tenminutes', 'dzm_update_accounts_hook' );
@@ -19,6 +9,14 @@ function dz_setup_schedule() {
 
 function dzm_deactivator() {
     wp_clear_scheduled_hook('dzm_update_accounts_hook');
+}
+
+function cron_add_tenminutes($schedules) {
+    $schedules['tenminutes'] = array(
+        'interval' => 600,
+        'display' => __( 'Once Every 10 Minutes' )
+    );
+    return $schedules;
 }
 
 function dzm_update_accounts() {
