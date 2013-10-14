@@ -1,11 +1,43 @@
 <?php
 
 add_shortcode('btcguild', 'btcguild_func');
+add_shortcode('dzm_btc_chart', 'dzm_chart_func');
+
+function dzm_chart_func($atts) {
+  global $wpdb;
+  wp_enqueue_script('dzminercoop-chart');
+  wp_enqueue_script('amcharts');
+
+  extract(shortcode_atts(array(
+      'id' => ''
+  ), $atts));
+
+    $workers_table = DZM_BTC::current()->workers_table;
+
+    $rows = $wpdb->get_results($wpdb->prepare("SELECT worker_name, created_time, hashrate FROM $workers_table WHERE account_id = %d ORDER BY worker_name, created_time", $id));
+
+    $dataSets = array();
+    $i = -1;
+    $last_worker = '';
+    foreach($rows as $row) {
+        if ($row->worker_name != $last_worker) {
+            $i++;
+            $dataSets[] = array();
+            $last_worker = $row->worker_name;
+        }
+        $dataSets[$i][] = (object) array('date' => strtotime($row->created_time) * 1000, 'value' => $row->hashrate);
+    }
+
+    $output = "<script type=\"text/javascript\" language=\"javascript\">dz_hashRateData = ";
+    $output .= json_encode($dataSets);
+    $output .=";</script><div id=\"hashratechartdiv\"></div>";
+    return $output;
+}
 
 function btcguild_func($atts) {
     global $wpdb;
-    $accounts_table = $wpdb->prefix . 'dzm_btcguild_accounts';
-    $workers_table = $wpdb->prefix . 'dzm_btcguild_miners';
+    $accounts_table = DZM_BTC::current()->accounts_table;
+    $workers_table = DZM_BTC::current()->workers_table;
 
     wp_enqueue_style('dzminercoop-btcguild');
     extract(shortcode_atts( array(

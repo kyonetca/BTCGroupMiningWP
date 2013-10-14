@@ -23,13 +23,16 @@ include( plugin_dir_path( __FILE__ ) . 'dzminercoop-btcguild-shortcodes.php');
 //TODO: Autoload?
 include( plugin_dir_path( __FILE__ ) . 'DZM_BTC_Abstract_Pool_Adapter.php');
 include( plugin_dir_path( __FILE__ ) . 'DZM_BTC_BTCGuild_Pool_Adapter.php');
+include( plugin_dir_path( __FILE__ ) . 'DZM_BTC.php');
 
 
 add_action( 'admin_menu', 'dz_plugin_menu');
 add_action( 'wp_enqueue_scripts', 'dzm_plugin_styles');
 
 function dzm_plugin_styles() {
-    wp_register_style( 'dzminercoop-btcguild', plugins_url( 'dzminercoop-btcguild/css/plugin.css'));
+    wp_register_script('amcharts', '//cdnjs.cloudflare.com/ajax/libs/amcharts/2.11.3/amcharts.js');
+    wp_register_script('dzminercoop-chart', plugins_url('dzminercoop-btcguild/js/chart.js'));
+    wp_register_style('dzminercoop-btcguild', plugins_url( 'dzminercoop-btcguild/css/plugin.css'));
 }
 
 function dz_plugin_menu() {
