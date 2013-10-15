@@ -16,7 +16,7 @@ function createHashRateChart() {
     var dataSets = [];
     for (var i = 0; i < dz_hashRateData.length; i++) {
     var dataSet = new AmCharts.DataSet();
-    dataSet.color = colors[i];
+    dataSet.color = colors[i % colors.length];
     dataSet.fieldMappings = [{
         fromField: "value",
         toField: "value"
