@@ -5,8 +5,6 @@ add_shortcode('dzm_btc_chart', 'dzm_chart_func');
 
 function dzm_chart_func($atts) {
   global $wpdb;
-  wp_enqueue_script('amcharts');
-  wp_enqueue_script('amstock');
   wp_enqueue_script('dzminercoop-chart');
 
   extract(shortcode_atts(array(
