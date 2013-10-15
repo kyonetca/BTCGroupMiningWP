@@ -5,8 +5,9 @@ add_shortcode('dzm_btc_chart', 'dzm_chart_func');
 
 function dzm_chart_func($atts) {
   global $wpdb;
-  wp_enqueue_script('dzminercoop-chart');
   wp_enqueue_script('amcharts');
+  wp_enqueue_script('amstock');
+  wp_enqueue_script('dzminercoop-chart');
 
   extract(shortcode_atts(array(
       'id' => ''
@@ -25,12 +26,12 @@ function dzm_chart_func($atts) {
             $dataSets[] = array();
             $last_worker = $row->worker_name;
         }
-        $dataSets[$i][] = (object) array('date' => strtotime($row->created_time) * 1000, 'value' => $row->hashrate);
+        $dataSets[$i][] = (object) array('date' => strtotime($row->created_time) * 1000, 'value' => $row->hashrate / 1000);
     }
 
     $output = "<script type=\"text/javascript\" language=\"javascript\">dz_hashRateData = ";
     $output .= json_encode($dataSets);
-    $output .=";</script><div id=\"hashratechartdiv\"></div>";
+    $output .=";</script><div id=\"hashratechartdiv\" style=\"height:300px; width:100%\"></div>";
     return $output;
 }
 
