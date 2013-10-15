@@ -29,7 +29,7 @@ function dzm_chart_func($atts) {
 
     $output = "<script type=\"text/javascript\" language=\"javascript\">dz_hashRateData = ";
     $output .= json_encode($dataSets);
-    $output .=";</script><div id=\"hashratechartdiv\" style=\"height:300px; width:100%\"></div>";
+    $output .='</script><div id="hashratechartdiv" style="height:300px; width:100%;"></div>';
     return $output;
 }
 
@@ -74,7 +74,7 @@ function btcguild_func($atts) {
     $text .= "<tr><th>24 Hour BTC</th><td>&nbsp;</td><td>$account->last_24</td></tr>";
     $text .= "<tr><th>Earned NMC</th><td>&nbsp;</td><td>$account->nmc_total</td></tr>";
 
-    $rows = $wpdb->get_results("SELECT * FROM $workers_table WHERE account_id = $account->id AND created_time = '$account->last_update'");
+    $rows = $wpdb->get_results("SELECT * FROM $workers_table WHERE account_id = $account->id AND created_time = '$account->last_update' ORDER BY worker_name");
     foreach ($rows as $idx => $worker) {
         $text .= "<tr><th>Worker " . ($idx + 1) . " Hash Rate</th><td>&nbsp;</td><td>" . round($worker->hashrate/1000, 3) . " Gh/s</td></tr>";
     }

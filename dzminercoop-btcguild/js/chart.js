@@ -16,6 +16,7 @@ function createHashRateChart() {
     var dataSets = [];
     for (var i = 0; i < dz_hashRateData.length; i++) {
     var dataSet = new AmCharts.DataSet();
+    dataSet.title = "Worker " + (i + 1).toString();
     dataSet.color = colors[i % colors.length];
     dataSet.fieldMappings = [{
         fromField: "value",
@@ -39,6 +40,7 @@ function createHashRateChart() {
     // graph of first stock panel
     var graph1 = new AmCharts.StockGraph();
     graph1.valueField = "value";
+    graph1.comparable = false;
     graph1.type = "smoothedLine";
     graph1.lineThickness = 2;
     graph1.bullet = "round";
@@ -49,8 +51,6 @@ function createHashRateChart() {
 
     // create stock legend
     var stockLegend1 = new AmCharts.StockLegend();
-    stockLegend1.valueTextRegular = " ";
-    stockLegend1.markerType = "none";
     stockPanel1.stockLegend = stockLegend1;
 
     // set panels to the chart
@@ -98,6 +98,11 @@ function createHashRateChart() {
     var panelsSettings = new AmCharts.PanelsSettings();
     panelsSettings.usePrefixes = true;
     chart.panelsSettings = panelsSettings;
+
+    // DATA SET SELECTOR
+    var dataSetSelector = new AmCharts.DataSetSelector();
+    dataSetSelector.position = "bottom";
+    chart.dataSetSelector = dataSetSelector;
 
     chart.write('hashratechartdiv');
 }
