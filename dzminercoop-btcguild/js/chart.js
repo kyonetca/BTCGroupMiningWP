@@ -12,10 +12,11 @@ function createHashRateChart() {
     chart.categoryAxesSettings = categoryAxesSettings;
 
     // DATASETS //////////////////////////////////////////
+    var colors = ["#b0de09", "#0000cc", "#cc0000", "#999999"];
     var dataSets = [];
     for (var i = 0; i < dz_hashRateData.length; i++) {
     var dataSet = new AmCharts.DataSet();
-    dataSet.color = "#b0de09";
+    dataSet.color = colors[i];
     dataSet.fieldMappings = [{
         fromField: "value",
         toField: "value"
