@@ -100,9 +100,11 @@ function createHashRateChart() {
     chart.panelsSettings = panelsSettings;
 
     // DATA SET SELECTOR
-    var dataSetSelector = new AmCharts.DataSetSelector();
-    dataSetSelector.position = "bottom";
-    chart.dataSetSelector = dataSetSelector;
+    if (dz_hashRateData.length > 1) {
+        var dataSetSelector = new AmCharts.DataSetSelector();
+        dataSetSelector.position = "bottom";
+        chart.dataSetSelector = dataSetSelector;
+    }
 
     chart.write('hashratechartdiv');
 }
