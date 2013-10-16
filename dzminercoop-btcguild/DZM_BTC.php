@@ -12,12 +12,14 @@ class DZM_BTC {
 
     public $accounts_table;
     public $workers_table;
+    public $spot_price_option;
 
     private function __construct()
     {
         global $wpdb;
         $this->accounts_table = $wpdb->prefix . 'dzm_btcguild_accounts';
         $this->workers_table = $wpdb->prefix . 'dzm_btcguild_miners';
+        $this->spot_price_option = 'bitstamp_spot_price';
     }
 
     public static function current()

@@ -1,6 +1,6 @@
 <?php
 global $dzm_btcguild_db_version;
-$dzm_btcguild_db_version = "1.2";
+$dzm_btcguild_db_version = "1.3";
 
 add_action( 'plugins_loaded', 'dzm_update_db_check');
 
@@ -29,6 +29,7 @@ function dzm_btcguild_install() {
     payout_inbound decimal(16, 8),
     payout_outbound decimal(16,8),
     fees decimal(16, 8) NOT NULL DEFAULT 0,
+    fiat_cost decimal(16,2),
     PRIMARY KEY (id)
    );";
 

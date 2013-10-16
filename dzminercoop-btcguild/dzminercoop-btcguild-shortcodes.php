@@ -50,35 +50,68 @@ function btcguild_func($atts) {
     }
 
     $total = (empty($account->payout_address) ? $account->total : ($account->balance + $account->payout_inbound));
-    $net_revenue = $total - $account->fees;
-    $eps = ($total - $account->fees) / $account->shares;
+    $net_revenue = number_format($total - $account->fees, 8);
+    $eps = number_format(($total - $account->fees) / $account->shares, 8);
     $profit = $eps - $account->cost;
     $profit_class = ($profit < 0) ? ' class="negative" ' : '';
     $roi = round(($eps - $account->cost) / $account->cost * 100, 2);
 
+    $xrate = get_option(DZM_BTC::current()->spot_price_option);
+    $columns = 3;
+    if ($account->fiat_cost) {
+        $columns = 4;
+        $total_fiat = round($total * $xrate, 2);
+        $fees_fiat = round($account->fees * $xrate, 2);
+        $net_revenue_fiat = number_format($total_fiat - $fees_fiat, 2);
+        $eps_fiat = number_format(($total_fiat - $fees_fiat) / $account->shares, 2);
+        $profit_fiat = $eps_fiat - $account->fiat_cost;
+        $roi_fiat = round(($eps_fiat - $account->fiat_cost) / $account->fiat_cost * 100, 2);
+        $profit_class_fiat = ($profit_fiat < 0) ? ' class="negative" ' : '';
+        $btc_24h_fiat = round($account->last_24 * $xrate, 2);
+    }
+    $hashrate_columns = $columns - 2;
+
     $time_diff = secs_to_h(time() - strtotime($account->last_update));
 
     $text = "<table class=\"dzm-btcguild\">";
-    $text .= "<tr><th colspan=\"3\" class=\"dzm-top\">Returns</th></tr>";
-    $text .= "<tr><th>Gross Revenue</th><td>&nbsp;</td><td>$total</td></tr>";
+    $text .= "<tr><th colspan=\"$columns\" class=\"dzm-top\">Returns</th></tr>";
+    $text .= "<tr><th>Gross Revenue</th><td>&nbsp;</td><td>$total</td>";
+    if ($account->fiat_cost) $text .="<td>\$$total_fiat</td>";
+    $text .= "</tr>";
     if ($account->fees <> 0) {
-        $text .= "<tr><th>Fees Applied</th><td>-</td><td>$account->fees</td></tr>";
-        $text .= "<tr><th>Net Revenue</th><td>=</td><td>$net_revenue</td></tr>";
+        $text .= "<tr><th>Fees Applied</th><td>-</td><td>$account->fees</td>";
+        if ($account->fiat_cost) $text .="<td>\$$fees_fiat</td>";
+        $text .= "</tr>";
+        $text .= "<tr><th>Net Revenue</th><td>=</td><td>$net_revenue</td>";
+        if ($account->fiat_cost) $text .="<td>\$$net_revenue_fiat</td>";
+        $text .= "</tr>";
     }
     $text .= "<tr><th>Shares</th><td>&divide;<td>$account->shares</td></tr>";
     $text .= "<tr><th>Net Revenue Per Share</th><td>=</td><td>$eps</td>";
+    if ($account->fiat_cost) $text .="<td>\$$eps_fiat</td>";
+    $text .= "</tr>";
     $text .= "<tr><th>Share Cost</th><td>-</td><td>$account->cost</td>";
-    $text .= "<tr class=\"dzm-summary\"><th>Net Profit Per Share</th><td>=</td><td $profit_class>$profit</td>";
-    $text .= "<tr><th>Current ROI</th><td>=</td><td $profit_class>" . $roi . "%</td>";
-    $text .= "<tr><th colspan=\"3\" class=\"dzm-top\">Other</th></tr>";
-    $text .= "<tr><th>24 Hour BTC</th><td>&nbsp;</td><td>$account->last_24</td></tr>";
-    $text .= "<tr><th>Earned NMC</th><td>&nbsp;</td><td>$account->nmc_total</td></tr>";
+    if ($account->fiat_cost) $text .="<td>\$$account->fiat_cost</td>";
+    $text .= "</tr>";
+    $text .= "<tr class=\"dzm-summary\"><th>Net Profit Per Share</th><td>=</td><td $profit_class>" . number_format(abs($profit), 8) . "</td>";
+    if ($account->fiat_cost) $text .="<td $profit_class_fiat>\$" . number_format(abs($profit_fiat), 2) . "</td>";
+    $text .= "</tr>";
+    $text .= "<tr><th>Current ROI</th><td>=</td><td $profit_class>" . abs($roi) . "%</td>";
+    if ($account->fiat_cost) $text .="<td $profit_class_fiat>" . abs($roi_fiat) . "%</td>";
+    $text .= "</tr>";
+    $text .= "<tr><th colspan=\"$columns\" class=\"dzm-top\">Other</th></tr>";
+    $text .= "<tr><th>24 Hour BTC</th><td>&nbsp;</td><td>$account->last_24</td>";
+    if ($account->fiat_cost) $text .="<td>\$$btc_24h_fiat</td>";
+    $text .= "</tr>";
+    $text .= "<tr><th>Earned NMC</th><td>&nbsp;</td><td>$account->nmc_total</td>";
+    if ($account->fiat_cost) $text .="<td>&nbsp;</td>";
+    $text .= "</tr>";
 
     $rows = $wpdb->get_results("SELECT * FROM $workers_table WHERE account_id = $account->id AND created_time = '$account->last_update' ORDER BY worker_name");
     foreach ($rows as $idx => $worker) {
-        $text .= "<tr><th>Worker " . ($idx + 1) . " Hash Rate</th><td>&nbsp;</td><td>" . round($worker->hashrate/1000, 3) . " Gh/s</td></tr>";
+        $text .= "<tr><th>Worker " . ($idx + 1) . " Hash Rate</th><td>&nbsp;</td><td colspan=\"$hashrate_columns\">" . round($worker->hashrate/1000, 3) . " Gh/s</td></tr>";
     }
-    $text .="<tr><td class=\"credit\" colspan =\"3\">Last Update: $time_diff ago | plugin by <a href=\"http://mootinator.com\">mootinator</a></td></tr>";
+    $text .="<tr><td class=\"credit\" colspan =\"$columns\">Last Update: $time_diff ago | plugin by <a href=\"http://mootinator.com\">mootinator</a></td></tr>";
     $text .="</table>";
     return $text;
 }

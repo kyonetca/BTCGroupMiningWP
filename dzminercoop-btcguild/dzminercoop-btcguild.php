@@ -54,14 +54,16 @@ if (isset($_POST['api_key']) && empty($_POST['id'])) {
                 'cost' => $_POST['price'],
                 'update_interval' => $_POST['update_interval'],
                 'payout_address' => $_POST['payout_address'],
-                'fees' => $_POST['fees']),
+                'fees' => $_POST['fees'],
+                'fiat_cost' => $_POST['fiat_cost']),
             array(
                 '%s',
                 '%d',
                 '%f',
                 '%d',
                 '%s',
-                '%f'
+                '%f',
+                '%f',
             ));
   if ($insert_res) {
     dzm_update_accounts();
@@ -80,9 +82,10 @@ elseif (isset($_POST['api_key'])) {
                   'cost' => $_POST['price'],
                   'update_interval' => $_POST['update_interval'],
                   'payout_address' => $_POST['payout_address'],
-                  'fees' => $_POST['fees']),
+                  'fees' => $_POST['fees'],
+                  'fiat_cost' => $_POST['fiat_cost']),
               array('id' => $_POST['id']),
-              array('%s','%d','%f','%d', '%s','%f'),
+              array('%s','%d','%f','%d', '%s','%f','%f'),
               array('%d'));
     if ($update_res) {
       dzm_update_accounts();
@@ -98,7 +101,8 @@ foreach ($rows as $row) {
 <br><label>API Key</label><br><input type="text" name="api_key" value="$row->api_key">
 <br><label>Payout Address</label><br><input type="text" name="payout_address" value="$row->payout_address">
 <br><label># Shares</label><br><input type="text" name="shares" value="$row->shares">
-<br><label>Price</label><br><input type="text" name="price" value="$row->cost">
+<br><label>Price (BTC)</label><br><input type="text" name="price" value="$row->cost">
+<br><label>Price (USD)</label><br><input type="text" name="fiat_cost" value="$row->fiat_cost">
 <br><label>Mgmt Fees</label><br><input type="text" name="fees" value="$row->fees">
 <br><label>Update Interval (seconds)</label><br><input type="text" name="update_interval" value="$row->update_interval">
 <br><input type="submit" value="Edit"> <input type="submit" name="action" value="Delete" onclick="return confirm('Are you sure? This can not be undone.');">
@@ -114,8 +118,9 @@ $html_new = <<<EOD
 <label>API Key</label><br><input type="text" name="api_key">
 <br><label>Payout Address</label><br><input type="text" name="payout_address">
 <br><label># Shares</label><br><input type="text" name="shares" value="1">
-<br><label>Price</label><br><input type="text" name="price" value="1">
-<br><label>Mgmt Fees</label><br><input type="text" name="price" value="0.00000000">
+<br><label>Price (BTC)</label><br><input type="text" name="price" value="1">
+<br><label>Price (USD)</label><br><input type="text" name="fiat_cost" value="1">
+<br><label>Mgmt Fees</label><br><input type="text" name="fees" value="0.00000000">
 <br><label>Update Interval (seconds)</label><br><input type="text" name="update_interval" value="600">
 <br><input type="submit" value="Add">
 </form>

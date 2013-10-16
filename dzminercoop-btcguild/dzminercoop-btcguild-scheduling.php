@@ -19,10 +19,26 @@ function cron_add_tenminutes($schedules) {
     return $schedules;
 }
 
+function dzm_update_spot_price() {
+            $curl = curl_init('https://www.bitstamp.net/api/ticker/');
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt( $curl, CURLOPT_CONNECTTIMEOUT, 15 );
+            curl_setopt( $curl, CURLOPT_TIMEOUT, 15 );
+            $result = curl_exec($curl);
+            $xrate = json_decode($result, true);
+
+            if (isset ($xrate['last'])) {
+                update_option(DZM_BTC::current()->spot_price_option, $xrate['last']);
+            }
+}
+
 function dzm_update_accounts() {
     global $wpdb;
     $account_table = $wpdb->prefix . "dzm_btcguild_accounts";
     $worker_table = $wpdb->prefix . "dzm_btcguild_miners";
+
+    dzm_update_spot_price();
+
     $rows = $wpdb->get_results("SELECT * FROM $account_table");
     foreach ($rows as $row) {
         $payout_inbound = 0;
