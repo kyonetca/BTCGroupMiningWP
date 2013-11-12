@@ -76,17 +76,19 @@ function btcguild_func($atts) {
     $text = "<table class=\"dzm-btcguild\">";
     $text .= "<tr><th colspan=\"$columns\" class=\"dzm-top\">Returns</th></tr>";
     $text .= "<tr><th>Gross Revenue</th><td>&nbsp;</td><td>$total</td>";
-    if ($account->fiat_cost) $text .="<td>\$$total_fiat</td>";
+    if ($account->fiat_cost) $text .="<td>\$" . number_format($total_fiat, 2) ."</td>";
     $text .= "</tr>";
     if ($account->fees <> 0) {
         $text .= "<tr><th>Fees Applied</th><td>-</td><td>$account->fees</td>";
-        if ($account->fiat_cost) $text .="<td>\$$fees_fiat</td>";
+        if ($account->fiat_cost) $text .="<td>\$" . number_format($fees_fiat, 2) . "</td>";
         $text .= "</tr>";
         $text .= "<tr><th>Net Revenue</th><td>=</td><td>$net_revenue</td>";
         if ($account->fiat_cost) $text .="<td>\$$net_revenue_fiat</td>";
         $text .= "</tr>";
     }
-    $text .= "<tr><th>Shares</th><td>&divide;<td>$account->shares</td></tr>";
+    $text .= "<tr><th>Shares</th><td>&divide;<td>$account->shares</td>";
+    if ($account->fiat_cost) $text .= "<td>&nbsp;</td>";
+    $text .= "</tr>";
     $text .= "<tr><th>Net Revenue Per Share</th><td>=</td><td>$eps</td>";
     if ($account->fiat_cost) $text .="<td>\$$eps_fiat</td>";
     $text .= "</tr>";
@@ -101,7 +103,7 @@ function btcguild_func($atts) {
     $text .= "</tr>";
     $text .= "<tr><th colspan=\"$columns\" class=\"dzm-top\">Other</th></tr>";
     $text .= "<tr><th>24 Hour BTC</th><td>&nbsp;</td><td>$account->last_24</td>";
-    if ($account->fiat_cost) $text .="<td>\$$btc_24h_fiat</td>";
+    if ($account->fiat_cost) $text .="<td>\$" . number_format($btc_24h_fiat, 2) . "</td>";
     $text .= "</tr>";
     $text .= "<tr><th>Earned NMC</th><td>&nbsp;</td><td>$account->nmc_total</td>";
     if ($account->fiat_cost) $text .="<td>&nbsp;</td>";
