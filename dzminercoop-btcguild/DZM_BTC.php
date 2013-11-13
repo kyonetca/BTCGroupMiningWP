@@ -13,6 +13,7 @@ class DZM_BTC {
     public $accounts_table;
     public $workers_table;
     public $spot_price_option;
+    public $pools;
 
     private function __construct()
     {
@@ -20,6 +21,10 @@ class DZM_BTC {
         $this->accounts_table = $wpdb->prefix . 'dzm_btcguild_accounts';
         $this->workers_table = $wpdb->prefix . 'dzm_btcguild_miners';
         $this->spot_price_option = 'bitstamp_spot_price';
+        $this->pools = array(
+            'DZM_BTC_BTCGuild_Pool_Adapter' => 'BTC Guild',
+            'DZM_BTC_Elgius_Pool_Adapter' =>  'Elgius'
+        );
     }
 
     public static function current()

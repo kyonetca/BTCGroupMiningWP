@@ -23,6 +23,7 @@ include( plugin_dir_path( __FILE__ ) . 'dzminercoop-btcguild-shortcodes.php');
 //TODO: Autoload?
 include( plugin_dir_path( __FILE__ ) . 'DZM_BTC_Abstract_Pool_Adapter.php');
 include( plugin_dir_path( __FILE__ ) . 'DZM_BTC_BTCGuild_Pool_Adapter.php');
+include( plugin_dir_path( __FILE__ ) . 'DZM_BTC_Elgius_Pool_Adapter.php');
 include( plugin_dir_path( __FILE__ ) . 'DZM_BTC.php');
 
 
@@ -55,7 +56,8 @@ if (isset($_POST['api_key']) && empty($_POST['id'])) {
                 'update_interval' => $_POST['update_interval'],
                 'payout_address' => $_POST['payout_address'],
                 'fees' => $_POST['fees'],
-                'fiat_cost' => $_POST['fiat_cost']),
+                'fiat_cost' => $_POST['fiat_cost'],
+                'pool_classname' => $_POST['pool_classname']),
             array(
                 '%s',
                 '%d',
@@ -64,6 +66,7 @@ if (isset($_POST['api_key']) && empty($_POST['id'])) {
                 '%s',
                 '%f',
                 '%f',
+                '%s',
             ));
   if ($insert_res) {
     dzm_update_accounts();
@@ -83,9 +86,10 @@ elseif (isset($_POST['api_key'])) {
                   'update_interval' => $_POST['update_interval'],
                   'payout_address' => $_POST['payout_address'],
                   'fees' => $_POST['fees'],
-                  'fiat_cost' => $_POST['fiat_cost']),
+                  'fiat_cost' => $_POST['fiat_cost'],
+                  'pool_classname' => $_POST['pool_classname']),
               array('id' => $_POST['id']),
-              array('%s','%d','%f','%d', '%s','%f','%f'),
+              array('%s','%d','%f','%d', '%s','%f','%f','%s'),
               array('%d'));
     if ($update_res) {
       dzm_update_accounts();
@@ -93,7 +97,14 @@ elseif (isset($_POST['api_key'])) {
   }
 }
 $rows = $wpdb->get_results("SELECT * FROM $account_table");
+$all_pools = DZM_BTC::current()->pools;
+$pools = "";
 foreach ($rows as $row) {
+    foreach ($all_pools as $class_name => $pool_name) {
+        $selected = ($class_name == $row->pool_classname) ? " selected" : "";
+        $pools .= "<option value=\"$class_name\"$selected>$pool_name</option>";
+    }
+
   $html_old = <<<EOD
 <form method="POST">
 <label>ID: $row->id</label>
@@ -105,13 +116,17 @@ foreach ($rows as $row) {
 <br><label>Price (USD)</label><br><input type="text" name="fiat_cost" value="$row->fiat_cost">
 <br><label>Mgmt Fees</label><br><input type="text" name="fees" value="$row->fees">
 <br><label>Update Interval (seconds)</label><br><input type="text" name="update_interval" value="$row->update_interval">
+<br><label>Pool</label><br><select name="pool_classname">$pools</select>
 <br><input type="submit" value="Edit"> <input type="submit" name="action" value="Delete" onclick="return confirm('Are you sure? This can not be undone.');">
 </form>
 
 EOD;
 print $html_old;
 }
-
+$pools = '';
+    foreach ($all_pools as $class_name => $pool_name) {
+        $pools .= "<option value=\"$class_name\">$pool_name</option>";
+    }
 $html_new = <<<EOD
 <fieldset><legend>Add Account</legend>
 <form method="POST">
@@ -122,6 +137,7 @@ $html_new = <<<EOD
 <br><label>Price (USD)</label><br><input type="text" name="fiat_cost" value="1">
 <br><label>Mgmt Fees</label><br><input type="text" name="fees" value="0.00000000">
 <br><label>Update Interval (seconds)</label><br><input type="text" name="update_interval" value="600">
+<br><label>Pool</label><br><select name="pool_classname">$pools</select>
 <br><input type="submit" value="Add">
 </form>
 </fieldset>

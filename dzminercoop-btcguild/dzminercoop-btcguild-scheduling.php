@@ -56,7 +56,8 @@ function dzm_update_accounts() {
                 $payout_outbound = $wallet['total_sent'] / 100000000;
             }
         }
-        $adapter = new DZM_BTC_BTCGuild_Pool_Adapter($row->api_key, $row->payout_address);
+        $reflection = new ReflectionClass($row->pool_classname);
+        $adapter = $reflection->newInstanceArgs($row->api_key, $row->payout_address);
         $res = $adapter->getUpdate();
 
         $ts = date('Y-m-d H:i:s', time());
