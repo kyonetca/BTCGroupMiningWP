@@ -5,7 +5,7 @@
 /*
 Plugin Name: BTC Group Mining Summary 
 Description: Grab stats from BTCGuild using API Key. Use shortcode [btcguild id=x] to display an account summary. Chart: [dzm_btc_chart id=x] (non-commercial use only)
-Version: 2.2.0
+Version: 2.3.0
 Plugin URI: http://mootinator.com/groupbuy-summary/
 Author: Mootinator
 Author URI: http://mootinator.com/

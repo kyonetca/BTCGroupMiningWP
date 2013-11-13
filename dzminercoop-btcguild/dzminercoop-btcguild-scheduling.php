@@ -57,7 +57,7 @@ function dzm_update_accounts() {
             }
         }
         $reflection = new ReflectionClass($row->pool_classname);
-        $adapter = $reflection->newInstanceArgs($row->api_key, $row->payout_address);
+        $adapter = $reflection->newInstanceArgs(array('api_key' => $row->api_key, 'payout_address' => $row->payout_address));
         $res = $adapter->getUpdate();
 
         $ts = date('Y-m-d H:i:s', time());
